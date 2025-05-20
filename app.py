@@ -164,13 +164,14 @@ except Exception as e:
         st.error(f"⚠️ Error: {e}")    
 
 
-if "results" in st.session_state and not st.session_state.results.empty:
+if "results" in st.session_state and st.session_state.results is not None and not st.session_state.results.empty:
     results = st.session_state.results
     if "rejected_ids" not in st.session_state:
         st.session_state.rejected_ids = []
     st.session_state.display_df = results[~results["MI Transaction ID"].isin(st.session_state.rejected_ids)]
 
-    if not display_df.empty:
+    if st.session_state.display_df is not None and not st.session_state.display_df.empty:
+    display_df = st.session_state.display_df
         row = display_df.iloc[0]
         col1, col2 = st.columns([4, 1])
         with col1:
