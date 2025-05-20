@@ -155,7 +155,7 @@ if "results" in st.session_state and not st.session_state.results.empty:
     results = st.session_state.results
     if "rejected_ids" not in st.session_state:
         st.session_state.rejected_ids = []
-    display_df = results[~results["MI Transaction ID"].isin(st.session_state.rejected_ids)]
+    st.session_state.display_df = results[~results["MI Transaction ID"].isin(st.session_state.rejected_ids)]
 
     if not display_df.empty:
         row = display_df.iloc[0]
@@ -184,29 +184,29 @@ else:
 
 
 # Only show one match at a time
-if not display_df.empty:
+if "display_df" in st.session_state and not st.session_state.display_df.empty:
+    display_df = st.session_state.display_df
     row = display_df.iloc[0]  # get next best
-
     col1, col2 = st.columns([4, 1])
     with col1:
         st.markdown(f"**{row['Target/Issuer Name']}** — {row['Business Description'][:80]}...")
     with col2:
         feedback_key = f"feedback_{row['MI Transaction ID']}"
         if st.button("👍", key=f"{feedback_key}_up"):
-            with open(feedback_file, "a", newline="", encoding="utf-8") as f:
+            with open("match_feedback.csv", "a", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
                 writer.writerow([datetime.now(), query_input, row["MI Transaction ID"], "thumbs_up"])
             st.success(f"👍 Feedback saved for: {row['Target/Issuer Name']}")
 
         if st.button("👎", key=f"{feedback_key}_down"):
-            with open(feedback_file, "a", newline="", encoding="utf-8") as f:
+            with open("match_feedback.csv", "a", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
                 writer.writerow([datetime.now(), query_input, row["MI Transaction ID"], "thumbs_down"])
             st.session_state.rejected_ids.append(row["MI Transaction ID"])
             st.warning(f"👎 Rejected: {row['Target/Issuer Name']} — showing next best match...")
             st.experimental_rerun()
 else:
-    st.info("🎉 You've reviewed all matches for this query!") 
+    st.info("👉 Submit a company profile to begin.")
 
 # Outside the if-else: export and download
 try:
