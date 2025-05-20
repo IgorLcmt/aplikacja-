@@ -50,11 +50,11 @@ EXCEL_PATH = "app_data/Database.xlsx"
 
 # --- Custom styling ---
 st.markdown("""
-    <style>
-    .st-emotion-cache-1v0mbdj, .st-emotion-cache-1c7y2kd, .st-emotion-cache-1n76uvr {
-        border-color: #80c7ff !important;
-    }
-    </style>
+<style>
+  .st-emotion-cache-1v0mbdj, .st-emotion-cache-1c7y2kd, .st-emotion-cache-1n76uvr {
+      border-color: #80c7ff !important;
+  }
+</style>
 """, unsafe_allow_html=True)
 
 st.title("CMT analiza mnożników pod wycene 🔍")
