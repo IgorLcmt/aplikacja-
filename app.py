@@ -49,6 +49,13 @@ def rerank_results(df_matches):
     # Prepare input feature for model
     X_features = df_matches[["Similarity Score"]].values
 
+# Check if input texts are too long (over token limit for the model)
+if isinstance(texts, list):
+    texts = [t for t in texts if len(t) < 8000]  # Trimming texts to fit within token limit
+elif isinstance(texts, str) and len(texts) > 8000:
+    st.error("❌ Input text is too long for embedding model.")
+    st.stop()  # Stop execution if input is too long
+    
 # --- Constants ---
 EMBEDDING_MODEL = "text-embedding-ada-002"
 BATCH_SIZE = 100
