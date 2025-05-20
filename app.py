@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import hashlib
 import io
+import os
 import openai
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import normalize
