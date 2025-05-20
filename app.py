@@ -193,7 +193,7 @@ if "results" in st.session_state and st.session_state.results is not None and no
                 st.experimental_rerun()
 
 # Only show one match at a time
-if "display_df" in st.session_state and not st.session_state.display_df.empty:
+if "display_df" in st.session_state and st.session_state.display_df is not None and not st.session_state.display_df.empty:
     display_df = st.session_state.display_df
     row = display_df.iloc[0]  # get next best
     col1, col2 = st.columns([4, 1])
