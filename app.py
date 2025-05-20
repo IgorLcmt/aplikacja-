@@ -15,6 +15,8 @@ from bs4 import BeautifulSoup
 import time
 import joblib
 
+query_input = st.sidebar.text_area("Paste company profile here:", height=200)
+
 # Load OpenAI API key from Streamlit secrets
 api_key = st.secrets.get("openai", {}).get("api_key")
 
@@ -22,6 +24,9 @@ api_key = st.secrets.get("openai", {}).get("api_key")
 if not api_key:
     st.error("❌ OpenAI API key is missing. Please check your secrets configuration.")
     st.stop()
+
+if api_key and query_input:
+    ...
 
 # --- Initialize session state ---
 if "results" not in st.session_state:
