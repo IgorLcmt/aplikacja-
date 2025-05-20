@@ -15,6 +15,14 @@ from bs4 import BeautifulSoup
 import time
 import joblib
 
+# Load OpenAI API key from Streamlit secrets
+api_key = st.secrets.get("openai", {}).get("api_key")
+
+# Validate the key exists
+if not api_key:
+    st.error("❌ OpenAI API key is missing. Please check your secrets configuration.")
+    st.stop()
+
 # --- Initialize session state ---
 if "results" not in st.session_state:
     st.session_state.results = None
