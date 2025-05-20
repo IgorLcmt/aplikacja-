@@ -75,21 +75,26 @@ def load_database():
 # --- Scrape website text or fallback to archive ---
 def scrape_text(domain):
     try:
-        res = requests.get(f"https://{domain}", timeout=4)
-        if res.status_code == 200:
-            soup = BeautifulSoup(res.text, "html.parser")
-            return soup.get_text(separator=' ', strip=True)
-    except:
-        pass
-    try:
-        archive_url = f"http://web.archive.org/web/{domain}"
-        res = requests.get(archive_url, timeout=5)
-        if res.status_code == 200:
-            soup = BeautifulSoup(res.text, "html.parser")
-            return soup.get_text(separator=' ', strip=True)
-    except:
-        return ""
-    return ""
+        # Try live website first, with timeout
+        st.info("📥 Downloading page...")
+        response = requests.get(domain, timeout=5)
+        soup = BeautifulSoup(response.text, "html.parser")
+        text = soup.get_text(separator=" ", strip=True)
+        if len(text) < 100:
+            raise ValueError("Too little content scraped.")
+        return text
+
+    except Exception as e:
+        # If that fails, fallback to Internet Archive
+        st.warning(f"🌐 Live site failed, trying archive.org fallback... ({e})")
+        archive_url = f"https://web.archive.org/web/{domain}"
+        try:
+            response = requests.get(archive_url, timeout=5)
+            soup = BeautifulSoup(response.text, "html.parser")
+            return soup.get_text(separator=" ", strip=True)
+        except Exception as fallback_error:
+            st.error(f"❌ Failed to scrape {domain} or archive: {fallback_error}")
+            return ""
 
 # --- Batch embedding using OpenAI ---
 def get_embeddings(texts, api_key):
