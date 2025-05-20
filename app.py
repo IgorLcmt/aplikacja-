@@ -15,6 +15,8 @@ from bs4 import BeautifulSoup
 import time
 import joblib
 
+st.set_page_config(page_title="CMT analiza mnożników pod wycene 🔍", layout="wide")
+
 query_input = st.sidebar.text_area("Paste company profile here:", height=200)
 
 # Load OpenAI API key from Streamlit secrets
@@ -46,7 +48,6 @@ if "rejected_ids" not in st.session_state:
 def rerank_results(df_matches):
     # Prepare input feature for model
     X_features = df_matches[["Similarity Score"]].values
-st.set_page_config(page_title="CMT analiza mnożników pod wycene 🔍", layout="wide")
 
 # --- Constants ---
 EMBEDDING_MODEL = "text-embedding-ada-002"
