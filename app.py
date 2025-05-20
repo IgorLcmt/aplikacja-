@@ -14,6 +14,16 @@ from bs4 import BeautifulSoup
 import time
 import joblib
 
+# --- Initialize session state ---
+if "results" not in st.session_state:
+    st.session_state.results = None
+
+if "display_df" not in st.session_state:
+    st.session_state.display_df = None
+
+if "rejected_ids" not in st.session_state:
+    st.session_state.rejected_ids = []
+    
 @st.cache_resource
 # --- Apply reranker on initial st.session_state.results ---
 def rerank_results(df_matches):
