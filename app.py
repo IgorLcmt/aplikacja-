@@ -54,8 +54,8 @@ st.title("CMT analiza mnożników pod wycene 🔍")
 import pickle
 @st.cache_data
 def load_database():
-    if os.path.exists("app_data/embedded_database.pkl"):
-        with open("app_data/embedded_database.pkl", "rb") as f:
+    if os.path.exists("app_data/Database.xlsx"):
+        with open("app_data/Database.xlsx", "rb") as f:
             return pickle.load(f)
 
     df = pd.read_excel(EXCEL_PATH)
