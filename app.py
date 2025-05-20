@@ -218,14 +218,23 @@ else:
     st.info("👉 Submit a company profile to begin.")
 
 # Outside the if-else: export and download
-try:
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='xlsxwriter') as writer:
+if (
+    "results" in st.session_state
+    and st.session_state.results is not None
+    and not st.session_state.results.empty
+):
+    try:
+        output = io.BytesIO()
+        with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
             st.session_state.results.to_excel(writer, index=False, sheet_name="Top Matches")
-            st.download_button("📥 Download Excel", data=output.getvalue(),
-                           file_name="Top_Matches.xlsx", mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
-except Exception as e:
-    st.error(f"❌ Error: {e}")
 
-if not api_key or not query_input:
-    st.info("👉 Enter your OpenAI API key and a company profile to begin.")
+        st.download_button(
+            "📥 Download Top Matches as Excel",
+            data=output.getvalue(),
+            file_name="Top_Matches.xlsx",
+            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
+    except Exception as e:
+        st.error(f"❌ Export failed: {e}")
+else:
+    st.info("ℹ️ Submit a company profile to enable Excel export.")
