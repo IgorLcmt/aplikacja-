@@ -138,18 +138,23 @@ def find_top_matches(df, query, api_key, top_n=10):
         'Business Description', 'Primary Industry', 'Web page', 'Similarity Score', 'Reason for Match'
     ]]
 
-# --- User Interface ---
-api_key = st.secrets["openai"]["api_key"]
-query_input = st.sidebar.text_area("✏️ Paste company profile here:", height=200)
+# Load API key from Streamlit secrets
+api_key = st.secrets.get("openai", {}).get("api_key")
+
+# Validate the key is available
+if not api_key:
+    st.error("❌ OpenAI API key is missing. Please check your secrets configuration.")
+    st.stop()
 
 if api_key and query_input:
     try:
         df = load_database()
+        if df.empty:
+            st.error("❌ Database is empty. Cannot generate matches.")
+            st.stop()
         with st.spinner("Embedding and scraping in progress..."):
             df_prepared = embed_database(df, api_key)
-        initial_matches = find_top_matches(df_prepared, query_input, api_key)
-        st.session_state.results = initial_matches
-
+    
         st.success("Top matches found:")
         st.dataframe(st.session_state.results, use_container_width=True)
         import csv
