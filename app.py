@@ -25,7 +25,10 @@ if "rejected_ids" not in st.session_state:
     st.session_state.rejected_ids = []
     
 @st.cache_resource
+# def load_reranker():
+#     return joblib.load("reranker_model.pkl")
 # --- Apply reranker on initial st.session_state.results ---
+
 def rerank_results(df_matches):
     # Prepare input feature for model
     X_features = df_matches[["Similarity Score"]].values
