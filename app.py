@@ -55,22 +55,22 @@ st.title("CMT analiza mnożników pod wycene 🔍")
 import pickle
 @st.cache_data
 def load_database():
-    if os.path.exists("app_data/Database.xlsx"):
-        with open("app_data/Database.xlsx", "rb") as f:
-            return pickle.load(f)
-
-    df = pd.read_excel(EXCEL_PATH)
-    df.columns = [col.strip() for col in df.columns]
-    df = df.rename(columns={
-        'Business Description\n(Target/Issuer)': 'Business Description',
-        'Primary Industry\n(Target/Issuer)': 'Primary Industry'
-    })
-    df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
-    df = df.dropna(subset=[
-        'Target/Issuer Name', 'MI Transaction ID', 'Implied Enterprise Value/ EBITDA (x)',
-        'Business Description', 'Primary Industry'
-    ])
-    return df
+    if os.path.exists(EXCEL_PATH):
+        df = pd.read_excel(EXCEL_PATH)
+        df.columns = [col.strip() for col in df.columns]
+        df = df.rename(columns={
+            'Business Description\n(Target/Issuer)': 'Business Description',
+            'Primary Industry\n(Target/Issuer)': 'Primary Industry'
+        })
+        df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
+        df = df.dropna(subset=[
+            'Target/Issuer Name', 'MI Transaction ID', 'Implied Enterprise Value/ EBITDA (x)',
+            'Business Description', 'Primary Industry'
+        ])
+        return df
+    else:
+        st.error("❌ Database file not found.")
+        return pd.DataFrame()
 
 # --- Scrape website text or fallback to archive ---
 def scrape_text(domain):
@@ -143,7 +143,7 @@ if api_key and query_input:
         with st.spinner("Embedding and scraping in progress..."):
             df_prepared = embed_database(df, api_key)
         initial_matches = find_top_matches(df_prepared, query_input, api_key)
-        st.session_state.st.session_state.results = initial_matches
+        st.session_state.results = initial_matches
 
         st.success("Top matches found:")
         st.dataframe(st.session_state.results, use_container_width=True)
